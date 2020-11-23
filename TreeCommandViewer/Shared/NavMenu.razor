@@ -1,0 +1,35 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div class="card" style="width: 18rem; margin-top: 70px;">
+    <div class="card-body">
+        <h5 class="card-title">Обход в глубину</h5>
+        <div class="btn-group-vertical">
+            <button class="btn btn-primary btn-lg btn-block" @onclick="(()=>TreeService.TreeClient.TreeClient.NLR())">Прямой обход (NLR)</button>
+            <button class="btn btn-primary btn-lg btn-block" @onclick="(()=> TreeService.TreeClient.TreeClient.LNR())">Центрированный обход (LNR)</button>
+            <button class="btn btn-primary btn-lg btn-block" @onclick="(()=>TreeService.TreeClient.TreeClient.LRN())">Обратный обход (LRN)</button>
+        </div>
+    </div>
+</div>
+<div class="card" style="width: 18rem; margin-top: 70px;">
+    <div class="card-body">
+        <h5 class="card-title">Обход в ширину</h5>
+        <div class="btn-group-vertical">
+            <button class="btn btn-primary btn-lg btn-block" @onclick="(()=>TreeService.TreeClient.TreeClient.BFS())">Обход в ширину (BFS)</button>
+        </div>
+    </div>
+</div>
+
+<button class="btn btn-danger btn-lg btn-block" style="	position:absolute; bottom:0;" @onclick="(()=>TreeService.TreeClient.TreeClient.Stop())">Остановить обход</button>
+
+
+@code{
+    protected override void OnAfterRender(bool firstRender)
+    {
+        TreeService.TreeClient.TreeClient.TreeChannge += OnTreeChange;
+    }
+
+    public async void OnTreeChange(object sender, string agr)
+    {
+        await JSRuntime.InvokeVoidAsync("RerenderTree", agr);
+    }
+}

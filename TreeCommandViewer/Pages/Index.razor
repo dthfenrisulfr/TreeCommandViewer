@@ -1,0 +1,42 @@
+﻿@using TreeService.TreeClient
+@inject IJSRuntime JSRuntime
+
+@page "/"
+<figure>
+    <figcaption></figcaption>
+    <div id="topOfTree">
+    </div>
+</figure>
+
+<div class="container" style="margin-left:0px">
+    <div class="row justify-content-start no-gutters">
+        <div class="col-10">
+            <textarea class="form-control" id="exampleFormControlTextarea1" style="resize:none; height:80px" rows="3" @bind="@command"></textarea>
+        </div>
+        <div class="col-md-auto">
+            <button class="btn btn-primary" style="height:80px; width:80px; margin-left:5px" @onclick="@(()=>TreeClient.Custom(command))"><i class="fas fa-play fa-2x"></i></button>
+        </div>
+    </div>
+</div>
+
+    @code{
+        private string command = "";
+        private bool treeIsRendered = false;
+        protected override void OnAfterRender(bool firstRender)
+        {
+            PrintTree();
+            TreeClient.TreeChannge += OnTreeChange;
+        }
+        private async void PrintTree()
+        {
+            if (!treeIsRendered)
+            {
+                await JSRuntime.InvokeVoidAsync("DrawTree", TreeClient.GetBinaryTree());
+                treeIsRendered = true;
+            }
+        }
+        private async void OnTreeChange(object sender, string arg)
+        {
+            await JSRuntime.InvokeVoidAsync("RerenderTree", arg);
+        }
+    }
