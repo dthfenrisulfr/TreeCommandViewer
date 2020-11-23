@@ -243,6 +243,7 @@ body {
             margin: 0 3.2px 2px;
             padding: 3.2px 8px;
             position: relative;
+            background-color: #35D2AB;
         }
         .tree code {
             width: 80px;
@@ -254,7 +255,7 @@ body {
             margin: 0 3.2px 2px;
             padding: 3.2px 8px;
             position: relative;
-            background-color: red;
+            background-color: #FF8740;
         }
             .tree ul:before,
             .tree code:before,
