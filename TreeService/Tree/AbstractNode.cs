@@ -10,11 +10,17 @@ namespace TreeService.Tree
         public AbstractNode Left { get; set; }
         public AbstractNode Right { get; set; }
         public bool IsRoot { get; set; }
+        public bool NodeIsVisited { get; set; } = false;
         public int Level { get; set; }
         public string NodeElement { get; set; }
         public string NodeName { get; set; }
 
         public abstract string GetTreeAsUnorderedLists();
-        public abstract void SelectNode(AbstractNode currentComponent, AbstractNode prevComponent);
+        public virtual void SelectNode()
+        {
+            if (!NodeIsVisited) NodeElement = $"<code>{NodeName}</code>";
+            else NodeElement = $"<span>{NodeName}</span>";
+
+        }
     }
 }

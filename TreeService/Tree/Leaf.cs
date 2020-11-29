@@ -18,10 +18,5 @@ namespace TreeService.Tree
         {
             return $"<li>{NodeElement}</li>";
         }
-        public override void SelectNode(AbstractNode currentComponent, AbstractNode prevComponent)
-        {
-            currentComponent.NodeElement = $"<code>{NodeName}</code>";
-            if (!(prevComponent is null)) prevComponent.NodeElement = $"<span>{NodeName}</span>";
-        }
     }
 }

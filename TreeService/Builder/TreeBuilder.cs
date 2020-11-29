@@ -12,7 +12,6 @@ namespace TreeService.Builder
     class TreeBuilder
     {
         private static Node tree;
-        private static AbstractNode prevNode;
         public bool RequsionIsStoped { get; set; } = false;
         public AbstractNode GetBinaryTree()
         {
@@ -51,16 +50,24 @@ namespace TreeService.Builder
             {
                 if (node != null)
                 {
-                    node.SelectNode(node, prevNode);
-                    TreeChannge.Invoke(this, tree.GetTreeAsUnorderedLists());
-                    prevNode = node;
-                    Thread.Sleep(500);
-
+                    VisitNode(node);
                     await NLR(node.Left);
+
+                    if (!(node is Leaf)) VisitNode(node);
                     await NLR(node.Right);
+                    if (!(node is Leaf)) VisitNode(node);
                 }
             });
             return false;
+        }
+
+        private void VisitNode(AbstractNode node)
+        {
+            node.SelectNode();
+            TreeChannge.Invoke(this, tree.GetTreeAsUnorderedLists());
+            Thread.Sleep(500);
+
+            node.NodeIsVisited = !node.NodeIsVisited;
         }
 
         public async Task<bool> LNR(AbstractNode node)
@@ -71,12 +78,10 @@ namespace TreeService.Builder
                 if (node != null)
                 {
                     await LNR(node.Left);
-                    node.SelectNode(node, prevNode);
-                    TreeChannge.Invoke(this, tree.GetTreeAsUnorderedLists());
-                    prevNode = node;
-                    Thread.Sleep(500);
+                    VisitNode(node);
 
                     await LNR(node.Right);
+                    if (!(node is Leaf)) VisitNode(node);
                 }
             });
             return false;
@@ -90,11 +95,9 @@ namespace TreeService.Builder
                 if (node != null)
                 {
                     await LRN(node.Left);
+                    //if (!(node is Leaf)) VisitNode(node);
                     await LRN(node.Right);
-                    node.SelectNode(node, prevNode);
-                    TreeChannge.Invoke(this, tree.GetTreeAsUnorderedLists());
-                    prevNode = node;
-                    Thread.Sleep(500);
+                    VisitNode(node);
                 }
             });
             return false;
@@ -110,10 +113,7 @@ namespace TreeService.Builder
                 {
                     if (RequsionIsStoped) break;
                     node = nodes.Dequeue();
-                    node.SelectNode(node, prevNode);
-                    TreeChannge.Invoke(this, tree.GetTreeAsUnorderedLists());
-                    prevNode = node;
-                    Thread.Sleep(500);
+                    VisitNode(node);
 
                     if (node.Left != null)
                     {
@@ -130,27 +130,23 @@ namespace TreeService.Builder
 
         public void Custom(AbstractNode node,string command)
         {
-            node.SelectNode(node, prevNode);
+            node.SelectNode();
             TreeChannge.Invoke(this, tree.GetTreeAsUnorderedLists());
-            prevNode = node;
             Thread.Sleep(500);
 
-            var result = Regex.Split(command, @"\W|_");
+            var result = Regex.Split(command, @"\W|_").ToArray();
 
-            foreach(var op in result)
+            for(var i = result.Count() - 1; i != -1; i--)
             {
-                if(op == "car")
+                if(result[i] == "car")
                 {
                     node = node?.Left;
                 }
-                if (op == "cdr")
+                if (result[i] == "cdr")
                 {
                     node = node?.Right;
                 }
-                node?.SelectNode(node, prevNode);
-                TreeChannge.Invoke(this, tree.GetTreeAsUnorderedLists());
-                prevNode = node;
-                Thread.Sleep(500);
+                VisitNode(node);
             }
         }
         public EventHandler<string> TreeChannge { get; set; }
