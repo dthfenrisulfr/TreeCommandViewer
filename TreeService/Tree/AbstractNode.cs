@@ -16,11 +16,39 @@ namespace TreeService.Tree
         public string NodeName { get; set; }
 
         public abstract string GetTreeAsUnorderedLists();
-        public virtual void SelectNode()
+        public virtual void SelectNode(int count)
         {
-            if (!NodeIsVisited) NodeElement = $"<code>{NodeName}</code>";
-            else NodeElement = $"<span>{NodeName}</span>";
+            if(this is Leaf) NodeElement = $"<finish>{NodeName}</finish>";
+            else
+            {
+                if (count == 3) NodeElement = $"<code>{NodeName}</code>";
+                if (count == 2) NodeElement = $"<three>{NodeName}</three>";
+                if (count == 1) NodeElement = $"<finish>{NodeName}</finish>";
+            }
+        }
+        public async Task<AbstractNode> GetByName(AbstractNode head, string name)
+        {
+            Queue<AbstractNode> nodes = new Queue<AbstractNode>();
+            nodes.Enqueue(head);
+            await Task.Run(() =>
+            {
+                while (nodes.Count > 0)
+                {
+                    head = nodes.Dequeue();
+                    if (head.NodeName == name) break;
 
+                    if (head.Left != null)
+                    {
+                        nodes.Enqueue(head.Left);
+                    }
+                    if (head.Right != null)
+                    {
+                        nodes.Enqueue(head.Right);
+                    }
+                }
+            });
+            if (head.NodeName != name) return null;
+            return head;
         }
     }
 }

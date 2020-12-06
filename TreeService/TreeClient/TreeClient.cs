@@ -11,31 +11,41 @@ namespace TreeService.TreeClient
         static TreeClient()
         {
             treeBuilder.TreeChannge += OnTreeChange;
+            treeBuilder.IsComlete += OnComplete;
         }
 
         static TreeBuilder treeBuilder = new TreeBuilder();
         public static EventHandler<string> TreeChannge { get; set; }
-        public static string GetBinaryTree()
+        public static EventHandler<bool> IsComplete { get; set; }
+        public static string GetCurrentTree()
         {
-            return $"{treeBuilder.GetBinaryTree().GetTreeAsUnorderedLists()}";
+            return $"{treeBuilder.GetSomeTree().GetTreeAsUnorderedLists()}";
         }
         public async static void NLR()
         {
-            treeBuilder.RequsionIsStoped = await treeBuilder.NLR(treeBuilder.GetTree());
+            treeBuilder.ReCreateList();
+            treeBuilder.ReqursionIsStoped = await treeBuilder.NLR(treeBuilder.GetTree());
+            treeBuilder.GoToTree();
         }
         public async static void LNR()
         {
-            treeBuilder.RequsionIsStoped = await treeBuilder.LNR(treeBuilder.GetTree());
+            treeBuilder.ReCreateList();
+            treeBuilder.ReqursionIsStoped = await treeBuilder.LNR(treeBuilder.GetTree());
+            treeBuilder.GoToTree();
         }
 
         public async static void LRN()
         {
-            treeBuilder.RequsionIsStoped = await treeBuilder.LRN(treeBuilder.GetTree());
+            treeBuilder.ReCreateList();
+            treeBuilder.ReqursionIsStoped = await treeBuilder.LRN(treeBuilder.GetTree());
+            treeBuilder.GoToTree();
         }
 
         public async static void BFS()
         {
-            treeBuilder.RequsionIsStoped = await treeBuilder.BFS(treeBuilder.GetTree());
+            treeBuilder.ReCreateList();
+            treeBuilder.ReqursionIsStoped = await treeBuilder.BFS(treeBuilder.GetTree());
+            treeBuilder.GoToTree();
         }
 
         private static void OnTreeChange(object sender, string arg)
@@ -43,14 +53,24 @@ namespace TreeService.TreeClient
             TreeChannge.Invoke(sender, arg);
         }
 
+        private static void OnComplete(object sender, bool arg)
+        {
+            IsComplete.Invoke(sender, arg);
+        }
+
         public static void Custom(string command)
         {
-            treeBuilder.Custom(treeBuilder.GetBinaryTree(), command);
+            treeBuilder.ReCreateList();
+            treeBuilder.Custom(treeBuilder.GetSomeTree(), command);
         }
 
         public static void Stop()
         {
-            treeBuilder.RequsionIsStoped = true;
+            treeBuilder.ReqursionIsStoped = true;
+        }
+        public static string GetTree(bool isBinary)
+        {
+            return $"{treeBuilder.Build(isBinary).GetTreeAsUnorderedLists()}";
         }
     }
 }

@@ -4,9 +4,9 @@
     <div class="card-body">
         <h5 class="card-title">Обход в глубину</h5>
         <div class="btn-group-vertical">
-            <button class="btn btn-primary btn-lg btn-block" @onclick="(()=>TreeService.TreeClient.TreeClient.NLR())">Прямой обход (NLR)</button>
-            <button class="btn btn-primary btn-lg btn-block" @onclick="(()=> TreeService.TreeClient.TreeClient.LNR())">Центрированный обход (LNR)</button>
-            <button class="btn btn-primary btn-lg btn-block" @onclick="(()=>TreeService.TreeClient.TreeClient.LRN())">Обратный обход (LRN)</button>
+            <button disabled="@isComplete" class="btn btn-primary btn-lg btn-block" @onclick="(()=>TreeService.TreeClient.TreeClient.NLR())">Прямой обход (NLR)</button>
+            <button disabled="@isComplete"  class="btn btn-primary btn-lg btn-block" @onclick="(()=>TreeService.TreeClient.TreeClient.LNR())">Центрированный обход (LNR)</button>
+            <button disabled="@isComplete"  class="btn btn-primary btn-lg btn-block" @onclick="(()=>TreeService.TreeClient.TreeClient.LRN())">Обратный обход (LRN)</button>
         </div>
     </div>
 </div>
@@ -14,18 +14,41 @@
     <div class="card-body">
         <h5 class="card-title">Обход в ширину</h5>
         <div class="btn-group-vertical">
-            <button class="btn btn-primary btn-lg btn-block" @onclick="(()=>TreeService.TreeClient.TreeClient.BFS())">Обход в ширину (BFS)</button>
+            <button disabled="@isComplete"  class="btn btn-primary btn-lg btn-block" @onclick="(()=>TreeService.TreeClient.TreeClient.BFS())">Обход в ширину (BFS)</button>
         </div>
     </div>
 </div>
 
-<button class="btn btn-danger btn-lg btn-block" style="	position:absolute; bottom:0;" @onclick="(()=>TreeService.TreeClient.TreeClient.Stop())">Остановить обход</button>
+<div class="card" style="width: 18rem; margin-top: 70px;">
+    <div class="card-body">
+        <h5 class="card-title">Построить</h5>
+        <div class="btn-group-vertical">
+            <button disabled="@isComplete"  class="btn btn-primary btn-lg btn-block" @onclick="(()=>SetTree(false))">Построить дерево</button>
+            <button disabled="@isComplete"  class="btn btn-primary btn-lg btn-block" @onclick="(()=>SetTree(true))">Построить симметрично</button>
+        </div>
+    </div>
+</div>
+
+<button disabled="@(!isComplete)" class="btn btn-danger btn-lg btn-block" style="	position:absolute; bottom:0;" @onclick="(()=>TreeService.TreeClient.TreeClient.Stop())">Остановить обход</button>
 
 
 @code{
+    private bool isComplete;
     protected override void OnAfterRender(bool firstRender)
     {
         TreeService.TreeClient.TreeClient.TreeChannge += OnTreeChange;
+        TreeService.TreeClient.TreeClient.IsComplete += OnComplete;
+    }
+    private async void SetTree(bool isBinary)
+    {
+        var tree = TreeService.TreeClient.TreeClient.GetTree(isBinary);
+        await JSRuntime.InvokeVoidAsync("RerenderTree", tree);
+    }
+
+    public void OnComplete(object sender, bool agr)
+    {
+        isComplete = !agr;
+        StateHasChanged();
     }
 
     public async void OnTreeChange(object sender, string agr)

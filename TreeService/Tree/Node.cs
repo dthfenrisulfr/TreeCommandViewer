@@ -19,8 +19,8 @@ namespace TreeService.Tree
             if (!IsRoot) result = $"<li>{NodeElement}<ul>";
             else result = $"<ul class=\"tree\" id=\"tree\"><li>{NodeElement}<ul>";
 
-            result += Left.GetTreeAsUnorderedLists();
-            result += Right.GetTreeAsUnorderedLists();
+            result += Left?.GetTreeAsUnorderedLists();
+            result += Right?.GetTreeAsUnorderedLists();
 
             return result + "</li></ul>";
         }

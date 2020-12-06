@@ -216,6 +216,7 @@ body {
             padding: .5em 0;
             vertical-align: top;
         }
+
             .tree li:before {
                 outline: solid 1px #666;
                 content: "";
@@ -240,11 +241,39 @@ body {
             border-radius: 50%;
             border: solid .1em #666;
             display: inline-block;
-            margin: 0 3.2px 2px;
+            margin: 0 3.2px 8px;
             padding: 3.2px 8px;
             position: relative;
             background-color: #35D2AB;
         }
+
+
+        .tree finish {
+            width: 80px;
+            height: 80px;
+            border: 2px solid red;
+            border-radius: 50%;
+            border: solid .1em #666;
+            display: inline-block;
+            margin: 0 3.2px 8px;
+            padding: 3.2px 8px;
+            position: relative;
+            background-color: #e65400;
+        }
+
+        .tree three {
+            width: 80px;
+            height: 80px;
+            border: 2px solid red;
+            border-radius: 50%;
+            border: solid .1em #666;
+            display: inline-block;
+            margin: 0 3.2px 8px;
+            padding: 3.2px 8px;
+            position: relative;
+            background-color: #ff8e4d;
+        }
+
         .tree code {
             width: 80px;
             height: 80px;
@@ -252,14 +281,17 @@ body {
             border-radius: 50%;
             border: solid .1em #666;
             display: inline-block;
-            margin: 0 3.2px 2px;
+            margin: 0 3.2px 8px;
             padding: 3.2px 8px;
             position: relative;
-            background-color: #FF8740;
+            background-color: #ffcfb3;
         }
+
             .tree ul:before,
             .tree code:before,
-            .tree span:before {
+            .tree span:before,
+            .tree three:before,
+            .tree finish:before {
                 outline: solid 1px #666;
                 content: "";
                 height: .5em;
@@ -272,7 +304,9 @@ body {
         }
 
         .tree code:before,
-        .tree span:before {
+        .tree span:before,
+        .tree three:before,
+        .tree finish:before {
             top: -.55em;
         }
 
@@ -283,6 +317,8 @@ body {
             .tree > li:before,
             .tree > li:after,
             .tree > li > code:before,
-            .tree > li > span:before {
+            .tree > li > span:before,
+            .tree > li > three:before,
+            .tree > li > finish:before {
                 outline: none;
             }
