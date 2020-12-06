@@ -198,10 +198,6 @@ namespace TreeService.Builder
 
             var targetNode = await node.GetByName(node, result.Last());
 
-            targetNode?.SelectNode(1);
-            TreeChannge.Invoke(this, tree.GetTreeAsUnorderedLists());
-            Thread.Sleep(500);
-
             for (var i = result.Count() - 1; i != -1; i--)
             {
                 if(result[i] == "car")
