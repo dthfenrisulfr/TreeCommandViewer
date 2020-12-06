@@ -16,13 +16,17 @@ namespace TreeService.Tree
         public string NodeName { get; set; }
 
         public abstract string GetTreeAsUnorderedLists();
-        public virtual void SelectNode(int count)
+        public virtual void SelectNode(int count, bool isBinaty = false)
         {
             if(this is Leaf) NodeElement = $"<finish>{NodeName}</finish>";
             else
             {
                 if (count == 3) NodeElement = $"<code>{NodeName}</code>";
                 if (count == 2) NodeElement = $"<three>{NodeName}</three>";
+
+                if (count == 3 || NodeName == "3" && !isBinaty) NodeElement = $"<code>{NodeName}</code>";
+                if (count == 2 && NodeName != "3" && !isBinaty) NodeElement = $"<three>{NodeName}</three>";
+
                 if (count == 1) NodeElement = $"<finish>{NodeName}</finish>";
             }
         }

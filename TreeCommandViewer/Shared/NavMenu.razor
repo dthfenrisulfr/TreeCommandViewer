@@ -45,10 +45,10 @@
         await JSRuntime.InvokeVoidAsync("RerenderTree", tree);
     }
 
-    public void OnComplete(object sender, bool agr)
+    public async void OnComplete(object sender, bool agr)
     {
         isComplete = !agr;
-        StateHasChanged();
+        await InvokeAsync(()=> StateHasChanged());
     }
 
     public async void OnTreeChange(object sender, string agr)

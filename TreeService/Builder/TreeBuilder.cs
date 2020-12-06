@@ -182,7 +182,7 @@ namespace TreeService.Builder
                 foreach (var node in abstractNodes)
                 {
                     if (ReqursionIsStoped) break;
-                    node.SelectNode(abstractNodes.Where(x => x == node).Count());
+                    node.SelectNode(abstractNodes.Where(x => x == node).Count(), IsBinary);
                     TreeChannge.Invoke(this, tree.GetTreeAsUnorderedLists());
                     Thread.Sleep(500);
                     abstractNodes = abstractNodes.Skip(1).ToList();
@@ -211,7 +211,7 @@ namespace TreeService.Builder
                     else targetNode = targetNode?.Left;
 
                 }
-                targetNode?.SelectNode(1);
+                targetNode?.SelectNode(1, IsBinary);
                 TreeChannge.Invoke(this, tree.GetTreeAsUnorderedLists());
                 Thread.Sleep(500);
             }
