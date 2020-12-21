@@ -12,10 +12,12 @@ namespace TreeService.TreeClient
         {
             treeBuilder.TreeChannge += OnTreeChange;
             treeBuilder.IsComlete += OnComplete;
+            treeBuilder.Step += OnStep;
         }
 
         static TreeBuilder treeBuilder = new TreeBuilder();
         public static EventHandler<string> TreeChannge { get; set; }
+        public static EventHandler<string> Step { get; set; }
         public static EventHandler<bool> IsComplete { get; set; }
         public static string GetCurrentTree()
         {
@@ -51,6 +53,11 @@ namespace TreeService.TreeClient
         private static void OnTreeChange(object sender, string arg)
         {
             TreeChannge.Invoke(sender, arg);
+        }
+
+        private static void OnStep(object sender, string arg)
+        {
+            Step?.Invoke(sender, arg);
         }
 
         private static void OnComplete(object sender, bool arg)

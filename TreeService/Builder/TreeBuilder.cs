@@ -13,11 +13,14 @@ namespace TreeService.Builder
     {
         private static Node tree;
         private int _nameCounter { get; set; }
+        private int key { get; set; }
         public bool IsBinary { get; set; }
         public bool ReqursionIsStoped { get; set; } = false;
         public void ReCreateList()
         {
-            abstractNodes = new List<AbstractNode>();
+            abstractNodes = new Dictionary<int, AbstractNode>();
+            steps = new Dictionary<int, string>();
+            key = 0;
         }
         public AbstractNode GetSomeTree()
         {
@@ -102,12 +105,25 @@ namespace TreeService.Builder
             {
                 if (node != null)
                 {
-                    VisitNode(node);
-                    await NLR(node.Left);
+                    steps.Add(key, $"NLR(node.{node.NodeName})");
+                    VisitNode(key, node);
+                    key++;
 
-                    if (!(node is Leaf) && node.Left != null) VisitNode(node);
+                    await NLR(node.Left);
+                    if (!(node is Leaf) && node.Left != null)
+                    {
+                        steps.Add(key, $"NLR(node.{node.NodeName})");
+                        VisitNode(key, node);
+                        key++;
+                    }
+
                     await NLR(node.Right);
-                    if (!(node is Leaf) && node.Right != null) VisitNode(node);
+                    if (!(node is Leaf) && node.Right != null)
+                    {
+                        steps.Add(key, $"NLR(node.{node.NodeName})");
+                        VisitNode(key, node);
+                        key++;
+                    }
                 }
             });
             return false;
@@ -121,10 +137,17 @@ namespace TreeService.Builder
                 if (node != null)
                 {
                     await LNR(node.Left);
-                    VisitNode(node);
+                    steps.Add(key, $"LNR(node.{node.NodeName})");
+                    VisitNode(key, node);
+                    key++;
 
                     await LNR(node.Right);
-                    if (!(node is Leaf) && node.Right != null) VisitNode(node);
+                    if (!(node is Leaf) && node.Right != null)
+                    {
+                        steps.Add(key, $"LNR(node.{node.NodeName})");
+                        VisitNode(key, node);
+                        key++;
+                    }
                 }
             });
             return false;
@@ -139,7 +162,9 @@ namespace TreeService.Builder
                 {
                     await LRN(node.Left);
                     await LRN(node.Right);
-                    VisitNode(node);
+                    steps.Add(key, $"LRN(node.{node.NodeName})");
+                    VisitNode(key, node);
+                    key++;
                 }
             });
             return false;
@@ -155,7 +180,9 @@ namespace TreeService.Builder
                 {
                     if (ReqursionIsStoped) break;
                     node = nodes.Dequeue();
-                    VisitNode(node);
+                    steps.Add(key, $"BFS(node.{node.NodeName})");
+                    VisitNode(key, node);
+                    key++;
 
                     if (node.Left != null)
                     {
@@ -170,9 +197,9 @@ namespace TreeService.Builder
             return false;
         }
 
-        private void VisitNode(AbstractNode node)
+        private void VisitNode(int key, AbstractNode node)
         {
-            abstractNodes.Add(node);
+            abstractNodes.Add(key, node);
         }
 
         public async void GoToTree()
@@ -182,10 +209,11 @@ namespace TreeService.Builder
                 foreach (var node in abstractNodes)
                 {
                     if (ReqursionIsStoped) break;
-                    node.SelectNode(abstractNodes.Where(x => x == node).Count(), IsBinary);
+                    node.Value.SelectNode(abstractNodes.Where(x => x.Value == node.Value).Count(), IsBinary);
                     TreeChannge.Invoke(this, tree.GetTreeAsUnorderedLists());
+                    Step?.Invoke(this, steps.FirstOrDefault(x=>x.Key == node.Key).Value);
                     Thread.Sleep(500);
-                    abstractNodes = abstractNodes.Skip(1).ToList();
+                    abstractNodes = abstractNodes.Skip(1).ToDictionary(x=>x.Key, x=>x.Value);
                 }
             });
             ReqursionIsStoped = false;
@@ -202,13 +230,29 @@ namespace TreeService.Builder
             {
                 if(result[i] == "car")
                 {
-                    if(targetNode?.Left != null) targetNode = targetNode?.Left;
-                    else targetNode = targetNode?.Right;
+                    if (targetNode?.Left != null)
+                    {
+                        targetNode = targetNode?.Left;
+                        Step?.Invoke(this, $"car({targetNode.NodeName})");
+                    }
+                    else 
+                    { 
+                        targetNode = targetNode?.Right;
+                        Step?.Invoke(this, $"car({targetNode.NodeName})");
+                    }
                 }
                 if (result[i] == "cdr")
-                {
-                    if (targetNode?.Right != null) targetNode = targetNode?.Right;
-                    else targetNode = targetNode?.Left;
+                {   
+                    if (targetNode?.Right != null)
+                    {
+                        targetNode = targetNode?.Right;
+                        Step?.Invoke(this, $"cdr({targetNode.NodeName})");
+                    }
+                    else
+                    {
+                        targetNode = targetNode?.Left;
+                        Step?.Invoke(this, $"cdr({targetNode.NodeName})");
+                    }
 
                 }
                 targetNode?.SelectNode(1, IsBinary);
@@ -217,8 +261,10 @@ namespace TreeService.Builder
             }
         }
         public EventHandler<string> TreeChannge { get; set; }
+        public EventHandler<string> Step { get; set; }
         public EventHandler<bool> IsComlete { get; set; }
-        private List<AbstractNode> abstractNodes = new List<AbstractNode>();
+        private Dictionary<int, AbstractNode> abstractNodes = new Dictionary<int, AbstractNode>();
+        private Dictionary<int, string> steps = new Dictionary<int, string>();
     }
 }
 

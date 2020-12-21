@@ -58,7 +58,18 @@
             doc.insertAdjacentHTML("beforeBegin", text);
         }
     </script>
-
-
+    <script>
+        window.Steps = (text) => {
+            var textarea = document.getElementById('steps');
+            textarea.value += text + '\n';
+            textarea.scrollTop = textarea.scrollHeight;
+        }
+    </script>
+    <script>
+        window.ClearSteps = (text) => {
+            var textarea = document.getElementById('steps');
+            textarea.value = "";
+        }
+    </script>
 </body>
 </html>
