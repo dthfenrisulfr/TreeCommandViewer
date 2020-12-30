@@ -6,12 +6,13 @@ namespace TreeService.Tree
 {
     class Node : AbstractNode
     {
-        public Node(string nodeName, bool isHead = false, int level = 0)
+        public Node(AbstractNode parent, string nodeName, bool isHead = false, int level = 0)
         {
             NodeName = nodeName;
             IsRoot = isHead;
             Level = level;
             NodeElement = $"<span>{NodeName}</span>";
+            Parent = parent;
         }
         public override string GetTreeAsUnorderedLists()
         {

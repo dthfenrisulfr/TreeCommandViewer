@@ -9,6 +9,8 @@ namespace TreeService.Tree
     {
         public AbstractNode Left { get; set; }
         public AbstractNode Right { get; set; }
+        public AbstractNode Parent { get; set; }
+        public string Code { get; set; } = "";
         public bool IsRoot { get; set; }
         public bool NodeIsVisited { get; set; } = false;
         public int Level { get; set; }

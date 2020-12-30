@@ -8,11 +8,12 @@ namespace TreeService.Tree
     class Leaf : AbstractNode
     {
         public bool IsVisited = false;
-        public Leaf(string nodeName, int level = 0)
+        public Leaf(AbstractNode parent, string nodeName, int level = 0)
         {
             NodeName = nodeName;
             Level = level;
             NodeElement = $"<span>{NodeName}</span>";
+            Parent = parent;
         }
         public override string GetTreeAsUnorderedLists()
         {
